@@ -1,0 +1,9 @@
+{
+  "Author": "daemitus",
+  "Name": "ezMiniCactpot",
+  "Description": "Mini Cactpot solution finder",
+  "InternalName": "MiniCactpotSolver",
+  "AssemblyVersion": "1.0.0.0",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 2
+}
