@@ -7,6 +7,8 @@ using FFXIVClientStructs.Component.GUI;
 using Dalamud.Game.Internal;
 using System.Threading.Tasks;
 using System.Threading;
+using FFXIVClientStructs.Component.GUI.Addon;
+using System.Collections.Generic;
 
 namespace MiniCactpotSolver
 {
@@ -24,46 +26,89 @@ namespace MiniCactpotSolver
             this.Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
 
             this.Interface.UiBuilder.OnBuildUi += UiBuilder_OnBuildUi_Overlay;
-            this.Interface.Framework.OnUpdateEvent += Framework_OnUpdateEvent;
+            this.QueueLoopToken = new CancellationTokenSource();
+            this.QueueLoopTask = Task.Run(() => GameBoardUpdaterLoop(QueueLoopToken.Token));
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
             this.Interface.UiBuilder.OnBuildUi -= UiBuilder_OnBuildUi_Overlay;
-            this.Interface.Framework.OnUpdateEvent -= Framework_OnUpdateEvent;
+            this.QueueLoopToken.Cancel();
+            await this.QueueLoopTask;
         }
 
         #region GameLogic
 
         private readonly PerfectCactpot PerfectCactpot = new PerfectCactpot();
-        private int[] previousState = new int[9];
+        private readonly Queue<int[]> GameStateQueue = new Queue<int[]>();
+        private Task QueueLoopTask;
+        private CancellationTokenSource QueueLoopToken;
 
-        private async void Framework_OnUpdateEvent(Framework framework)
+        private async void GameBoardUpdaterLoop(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await Task.Delay(100);
+                GameBoardUpdater();
+            }
+        }
+
+        private unsafe void GameBoardUpdater()
         {
             if (Interface.ClientState.TerritoryType != 144)  // Golden Saucer
                 return;
 
-            UpdateGameData();
+            bool ready = false;
+            var addon = Interface.Framework.Gui.GetUiObjectByName("LotteryDaily", 1);
+            if (addon != IntPtr.Zero)
+            {
+                var uiAddon = MiniCactpotGameData.Addon = (AddonDailyLottery*)addon;
+                var rootNode = uiAddon->AtkUnitBase.RootNode;
+                if (rootNode != null)
+                {
+                    MiniCactpotGameData.X = rootNode->X;
+                    MiniCactpotGameData.Y = rootNode->Y;
+                    MiniCactpotGameData.Width = (ushort)(rootNode->Width * rootNode->ScaleX);
+                    MiniCactpotGameData.Height = (ushort)(rootNode->Height * rootNode->ScaleY);
+                    MiniCactpotGameData.IsVisible = (uiAddon->AtkUnitBase.Flags & 0x20) == 0x20;
+                    ready = true;
+                }
+            }
+
+            if (!ready)
+            {
+                MiniCactpotGameData.Addon = null;
+                MiniCactpotGameData.X = 0;
+                MiniCactpotGameData.Y = 0;
+                MiniCactpotGameData.Width = 0;
+                MiniCactpotGameData.Height = 0;
+                MiniCactpotGameData.IsVisible = false;
+                for (int i = 0; i < TotalNumbers; i++)
+                    MiniCactpotGameData.GameState[i] = 0;
+            }
 
             if (!MiniCactpotGameData.IsVisible)
                 return;
 
-            var gameState = GetSolverState();
-            if (!Enumerable.SequenceEqual(gameState, previousState))
+            var gameState = Enumerable.Range(0, TotalNumbers).Select(i => MiniCactpotGameData.Addon->GameNumbers[i]).ToArray();
+            if (!Enumerable.SequenceEqual(gameState, MiniCactpotGameData.GameState))
             {
-                previousState = gameState;
+                MiniCactpotGameData.GameState = gameState;
 
                 if (!gameState.Contains(0))
                 {
                     // Perform this check for when the entire board is revealed, no unknowns/zeroes
                     for (var i = 0; i < TotalNumbers; i++)
-                        ToggleNumberNode(i, false);
+                        ToggleGameNode(i, false);
                     for (var i = 0; i < TotalLanes; i++)
                         ToggleLaneNode(i, false);
                 }
                 else
                 {
-                    var solution = await Task.Run(() => PerfectCactpot.Solve(gameState));
+                    for (var i = 0; i < TotalNumbers; i++)
+                        ToggleGameNode(i, false);  // Reset the number colors
+
+                    var solution = PerfectCactpot.Solve(gameState);
 
                     if (solution.Length == 8)
                     {
@@ -81,7 +126,7 @@ namespace MiniCactpotSolver
                         };
 
                         for (var i = 0; i < TotalNumbers; i++)
-                            ToggleNumberNode(i, false);  // Reset the number colors
+                            ToggleGameNode(i, false);  // Reset the number colors
 
                         for (var i = 0; i < TotalLanes; i++)
                             ToggleLaneNode(i, solution[i]);
@@ -89,7 +134,7 @@ namespace MiniCactpotSolver
                     else
                     {
                         for (var i = 0; i < TotalNumbers; i++)
-                            ToggleNumberNode(i, solution[i]);
+                            ToggleGameNode(i, solution[i]);
                     }
                 }
             }
@@ -97,88 +142,25 @@ namespace MiniCactpotSolver
 
         internal static unsafe class MiniCactpotGameData
         {
-            public static float X;
-            public static float Y;
-            public static ushort Width;
-            public static ushort Height;
-            public static bool IsVisible;
-            public static AtkComponentNode*[] NumberNodes = new AtkComponentNode*[TotalNumbers];
-            public static AtkComponentNode*[] LaneNodes = new AtkComponentNode*[TotalLanes];
+            public static AddonDailyLottery* Addon = null;
+            public static float X = 0;
+            public static float Y = 0;
+            public static ushort Width = 0;
+            public static ushort Height = 0;
+            public static bool IsVisible = false;
+            public static int[] GameState = new int[TotalNumbers];
         }
 
-        private unsafe void UpdateGameData()
+        private unsafe void ToggleGameNode(int i, bool enable)
         {
-            var addon = Interface.Framework.Gui.GetAddonByName("LotteryDaily", 1);
-
-            if (addon is null || addon.Address == IntPtr.Zero)
-                MiniCactpotGameData.IsVisible = false;
-
-            var uiAddon = (AtkUnitBase*)addon.Address;
-
-            MiniCactpotGameData.X = uiAddon->RootNode->X;
-            MiniCactpotGameData.Y = uiAddon->RootNode->Y;
-            MiniCactpotGameData.Width = (ushort)(uiAddon->RootNode->Width * uiAddon->RootNode->ScaleX);
-            MiniCactpotGameData.Height = (ushort)(uiAddon->RootNode->Height * uiAddon->RootNode->ScaleY);
-            MiniCactpotGameData.IsVisible = (uiAddon->Flags & 0x20) == 0x20;
-
-            var baseParentNode = uiAddon->RootNode
-                ->ChildNode->PrevSiblingNode->PrevSiblingNode
-                ->ChildNode->PrevSiblingNode->PrevSiblingNode->PrevSiblingNode;
-
-            var numberNodeParent = baseParentNode->ChildNode->PrevSiblingNode;
-            var numberNode = numberNodeParent->ChildNode;
-            for (var i = 0; i < TotalNumbers; i++)
-            {
-                if ((ulong)numberNode == 0)
-                    throw new Exception("Problem fetching number node");
-                MiniCactpotGameData.NumberNodes[TotalNumbers - 1 - i] = (AtkComponentNode*)numberNode;
-                numberNode = numberNode->PrevSiblingNode;
-            }
-
-            var laneNodeParent = numberNodeParent->PrevSiblingNode;
-            var laneNode = laneNodeParent->ChildNode;
-            for (var i = 0; i < TotalLanes; i++)
-            {
-                if ((ulong)laneNode == 0)
-                    throw new Exception("Problem fetching lane node");
-                MiniCactpotGameData.LaneNodes[TotalLanes - 1 - i] = (AtkComponentNode*)laneNode;
-                laneNode = laneNode->PrevSiblingNode;
-            }
+            ToggleNode(MiniCactpotGameData.Addon->GameBoard[i]->AtkComponentButton.AtkComponentBase.OwnerNode, enable);
         }
 
-        /// <summary>
-        /// Get the list of revealed numbers PerfectCactbot style
-        /// </summary>
-        /// <param name="numberNodes">Current UI data</param>
-        /// <returns>Int array of numbers, 0 for unknown.</returns>
-        private unsafe int[] GetSolverState()
+        private unsafe void ToggleLaneNode(int i, bool enable)
         {
-            var state = new int[9];
-            for (var i = 0; i < MiniCactpotGameData.NumberNodes.Length; i++)
-            {
-                var node = MiniCactpotGameData.NumberNodes[i];
-                var compNode = (AtkComponentCheckBox*)node->Component;
-                var textNode = (AtkTextNode*)compNode->AtkComponentButton.AtkComponentBase.ULDData.NodeList[2];
-                if ((ulong)textNode == 0)
-                    throw new Exception("Problem getting text node");
-
-                var numberByte = textNode->NodeText.InlineBuffer[0];
-                if (numberByte == 0)
-                    state[i] = 0;
-                else
-                    state[i] = numberByte - 48;  // ASCII ordinal
-            }
-            return state;
+            ToggleNode(MiniCactpotGameData.Addon->LaneSelector[i]->AtkComponentBase.OwnerNode, enable);
         }
 
-        private unsafe void ToggleNumberNode(int index, bool enable) => ToggleNode(MiniCactpotGameData.NumberNodes[index], enable);
-        private unsafe void ToggleLaneNode(int index, bool enable) => ToggleNode(MiniCactpotGameData.LaneNodes[index], enable);
-
-        /// <summary>
-        /// Flipflop the color of a given node to/from green
-        /// </summary>
-        /// <param name="node">Node to color</param>
-        /// <param name="enable">Green or not</param>
         private unsafe void ToggleNode(AtkComponentNode* node, bool enable)
         {
             if (enable)

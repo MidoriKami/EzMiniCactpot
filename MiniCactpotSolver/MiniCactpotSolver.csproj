@@ -44,6 +44,9 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DalamudPackager" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\FFXIVClientStructs\FFXIVClientStructs.csproj">
       <Private>true</Private>
     </ProjectReference>
