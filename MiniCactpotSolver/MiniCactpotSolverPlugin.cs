@@ -4,11 +4,9 @@ using System;
 using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.Component.GUI;
-using Dalamud.Game.Internal;
 using System.Threading.Tasks;
 using System.Threading;
 using FFXIVClientStructs.Component.GUI.Addon;
-using System.Collections.Generic;
 
 namespace MiniCactpotSolver
 {
