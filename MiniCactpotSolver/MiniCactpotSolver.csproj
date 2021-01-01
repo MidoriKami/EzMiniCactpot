@@ -65,4 +65,7 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;    mkdir &quot;$(SolutionDir)..\DalamudPlugins\plugins\$(TargetName)&quot;&#xD;&#xA;    mkdir &quot;$(SolutionDir)..\DalamudPlugins\testing\$(TargetName)&quot;&#xD;&#xA;    xcopy &quot;$(TargetDir)$(TargetName)&quot; &quot;$(SolutionDir)..\DalamudPlugins\plugins\$(TargetName)&quot; /S /F /Y &#xD;&#xA;    xcopy &quot;$(TargetDir)$(TargetName)&quot; &quot;$(SolutionDir)..\DalamudPlugins\testing\$(TargetName)&quot; /S /F /Y &#xD;&#xA;)&#xD;&#xA;" />
+  </Target>
 </Project>
