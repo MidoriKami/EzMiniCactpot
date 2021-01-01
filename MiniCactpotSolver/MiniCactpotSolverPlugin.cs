@@ -40,7 +40,6 @@ namespace MiniCactpotSolver
         #region GameLogic
 
         private readonly PerfectCactpot PerfectCactpot = new PerfectCactpot();
-        private readonly Queue<int[]> GameStateQueue = new Queue<int[]>();
         private Task QueueLoopTask;
         private CancellationTokenSource QueueLoopToken;
 
