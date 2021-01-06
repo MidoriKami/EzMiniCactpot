@@ -6,7 +6,7 @@ using System.Numerics;
 using FFXIVClientStructs.Component.GUI;
 using System.Threading.Tasks;
 using System.Threading;
-using FFXIVClientStructs.Component.GUI.Addon;
+using FFXIVClientStructs.Client.UI;
 
 namespace MiniCactpotSolver
 {

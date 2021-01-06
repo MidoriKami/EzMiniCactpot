@@ -41,10 +41,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="1.0.1" />
+    <PackageReference Include="MSBuild.ILMerge.Task" Version="1.1.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FFXIVClientStructs\FFXIVClientStructs.csproj">
@@ -65,7 +63,9 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;    mkdir &quot;$(SolutionDir)..\DalamudPlugins\plugins\$(TargetName)&quot;&#xD;&#xA;    mkdir &quot;$(SolutionDir)..\DalamudPlugins\testing\$(TargetName)&quot;&#xD;&#xA;    xcopy &quot;$(TargetDir)$(TargetName)&quot; &quot;$(SolutionDir)..\DalamudPlugins\plugins\$(TargetName)&quot; /S /F /Y &#xD;&#xA;    xcopy &quot;$(TargetDir)$(TargetName)&quot; &quot;$(SolutionDir)..\DalamudPlugins\testing\$(TargetName)&quot; /S /F /Y &#xD;&#xA;)&#xD;&#xA;" />
+  <Target Name="PackagePlugin" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="echo Starting DalamudPackager" />
+    <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="3" MakeZip="true" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)Scripts\CopyToDalamudPlugins.ps1 ^&#xD;&#xA;          -ConfigurationName $(ConfigurationName) ^&#xD;&#xA;          -TargetDir $(TargetDir) ^&#xD;&#xA;          -TargetName $(TargetName) ^&#xD;&#xA;          -SolutionDir $(SolutionDir)" />
   </Target>
 </Project>

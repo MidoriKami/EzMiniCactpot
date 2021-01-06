@@ -1,5 +1,6 @@
 {
   "Author": "daemitus",
   "Name": "ezMiniCactpot",
-  "Description": "Highlights recommended tiles in Mini Cactpot for your next move."
+  "Description": "Highlights recommended tiles in Mini Cactpot for your next move.",
+  "RepoUrl": "https://github.com/daemitus/MiniCactpotSolver"
 }
