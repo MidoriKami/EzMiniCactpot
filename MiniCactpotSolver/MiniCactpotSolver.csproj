@@ -66,6 +66,6 @@
   <Target Name="PackagePlugin" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
     <Exec Command="echo Starting DalamudPackager" />
     <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="3" MakeZip="true" />
-    <Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)Scripts\CopyToDalamudPlugins.ps1 ^&#xD;&#xA;          -ConfigurationName $(ConfigurationName) ^&#xD;&#xA;          -TargetDir $(TargetDir) ^&#xD;&#xA;          -TargetName $(TargetName) ^&#xD;&#xA;          -SolutionDir $(SolutionDir)" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)Scripts\CopyToDalamudPlugins.ps1 -ConfigurationName $(ConfigurationName) -TargetDir $(TargetDir) -TargetName $(TargetName) -SolutionDir $(SolutionDir)" />
   </Target>
 </Project>
