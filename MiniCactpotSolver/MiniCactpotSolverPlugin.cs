@@ -14,10 +14,10 @@ namespace MiniCactpotSolver
     {
         public string Name => "ezMiniCactpot";
 
-        private const int TotalNumbers = 9;
-        private const int TotalLanes = 8;
-
         internal DalamudPluginInterface Interface;
+
+        private const int TotalNumbers = PerfectCactpot.TotalNumbers;
+        private const int TotalLanes = PerfectCactpot.TotalLanes;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
@@ -67,7 +67,7 @@ namespace MiniCactpotSolver
                     MiniCactpotGameData.Y = rootNode->Y;
                     MiniCactpotGameData.Width = (ushort)(rootNode->Width * rootNode->ScaleX);
                     MiniCactpotGameData.Height = (ushort)(rootNode->Height * rootNode->ScaleY);
-                    MiniCactpotGameData.IsVisible = (uiAddon->AtkUnitBase.Flags & 0x20) == 0x20;
+                    MiniCactpotGameData.IsVisible = uiAddon->AtkUnitBase.IsVisible;
                     ready = true;
                 }
             }
@@ -87,7 +87,7 @@ namespace MiniCactpotSolver
             if (!MiniCactpotGameData.IsVisible)
                 return;
 
-            var gameState = Enumerable.Range(0, TotalNumbers).Select(i => MiniCactpotGameData.Addon->GameNumbers[i]).ToArray();
+            var gameState = GetGameState();
             if (!Enumerable.SequenceEqual(gameState, MiniCactpotGameData.GameState))
             {
                 MiniCactpotGameData.GameState = gameState;
@@ -146,6 +146,11 @@ namespace MiniCactpotSolver
             public static ushort Height = 0;
             public static bool IsVisible = false;
             public static int[] GameState = new int[TotalNumbers];
+        }
+
+        private unsafe int[] GetGameState()
+        {
+            return Enumerable.Range(0, TotalNumbers).Select(i => MiniCactpotGameData.Addon->GameNumbers[i]).ToArray();
         }
 
         private unsafe void ToggleGameNode(int i, bool enable)

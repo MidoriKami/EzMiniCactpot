@@ -16,6 +16,9 @@ namespace MiniCactpotSolver
     /// </summary>
     internal sealed class PerfectCactpot
     {
+        public const int TotalNumbers = 9;
+        public const int TotalLanes = 8;
+
         private const double EPS = 0.00001;
 
         private int[] Payouts => new int[] {
