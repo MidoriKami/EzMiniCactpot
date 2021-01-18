@@ -3,10 +3,10 @@ using ImGuiNET;
 using System;
 using System.Linq;
 using System.Numerics;
-using FFXIVClientStructs.Component.GUI;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
 using System.Threading;
-using FFXIVClientStructs.Client.UI;
 
 namespace MiniCactpotSolver
 {
@@ -59,7 +59,7 @@ namespace MiniCactpotSolver
             var addon = Interface.Framework.Gui.GetUiObjectByName("LotteryDaily", 1);
             if (addon != IntPtr.Zero)
             {
-                var uiAddon = MiniCactpotGameData.Addon = (AddonDailyLottery*)addon;
+                var uiAddon = MiniCactpotGameData.Addon = (AddonLotteryDaily*)addon;
                 var rootNode = uiAddon->AtkUnitBase.RootNode;
                 if (rootNode != null)
                 {
@@ -139,7 +139,7 @@ namespace MiniCactpotSolver
 
         internal static unsafe class MiniCactpotGameData
         {
-            public static AddonDailyLottery* Addon = null;
+            public static AddonLotteryDaily* Addon = null;
             public static float X = 0;
             public static float Y = 0;
             public static ushort Width = 0;
