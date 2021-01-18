@@ -15,7 +15,6 @@
     <AssemblyName>MiniCactpotSolver</AssemblyName>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFramework>net472</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -46,12 +45,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="1.2.0" />
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
+    <!--<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />-->
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FFXIVClientStructs\FFXIVClientStructs.csproj">
-      <Private>true</Private>
-    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)lib\FFXIVClientStructs\FFXIVClientStructs.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

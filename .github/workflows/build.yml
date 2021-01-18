@@ -19,17 +19,24 @@ jobs:
         repository: goatcorp/Dalamud 
         submodules: recursive
         path: lib\Dalamud
+    - name: Run actions/checkout@v2 (FFXIVClientStructs)
+      uses: actions/checkout@v2
+      with:
+        repository: daemitus/FFXIVClientStructs
+        path: lib\FFXIVClientStructs    
     - name: Build (Dalamud)
       run: |
         dotnet restore -r win Dalamud.sln
         MSBuild.exe Dalamud.sln /t:Build /p:Configuration=Release /p:DefineConstants=XL_NOAUTOUPDATE /p:WarningLevel=0
       working-directory: lib\Dalamud
     - name: Build
-      run: dotnet build --configuration Release
+      run: |
+        dotnet restore -r win MiniCactpotSolver.sln
+        dotnet build --configuration Release
     - uses: actions/upload-artifact@v2
       with:
         name: PluginRepoZip
-        path: XIVComboPlugin\bin\Release\net472\MiniCactpotSolver
+        path: MiniCactpotSolver\bin\Release\net472\MiniCactpotSolver
         if-no-files-found: error
   deploy:
     needs: build
