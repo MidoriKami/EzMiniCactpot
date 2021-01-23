@@ -1,34 +1,31 @@
 name: Build
+
 on: 
   workflow_dispatch:
   push:
     branches:
     - master
+
+env: 
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/setup-dotnet@v1
-      with: 
-        dotnet-version: 3.1.301
-    - uses: microsoft/setup-msbuild@v1.0.2
-    - uses: actions/checkout@v2
-    - name: Run actions/checkout@v2 (Dalamud)
+    - name: Checkout
       uses: actions/checkout@v2
-      with:
-        repository: goatcorp/Dalamud 
-        submodules: recursive
-        path: lib\Dalamud
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Download Dalamud
+      run: |
+        Invoke-WebRequest -Uri https://goaaats.github.io/ffxiv/tools/launcher/addons/Hooks/latest.zip -OutFile latest.zip
+        Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\"    
     - name: Run actions/checkout@v2 (FFXIVClientStructs)
       uses: actions/checkout@v2
       with:
         repository: daemitus/FFXIVClientStructs
-        path: lib\FFXIVClientStructs    
-    - name: Build (Dalamud)
-      run: |
-        dotnet restore -r win Dalamud.sln
-        MSBuild.exe Dalamud.sln /t:Build /p:Configuration=Release /p:DefineConstants=XL_NOAUTOUPDATE /p:WarningLevel=0
-      working-directory: lib\Dalamud
+        path: lib\FFXIVClientStructs
     - name: Build
       run: |
         dotnet restore -r win MiniCactpotSolver.sln
@@ -36,8 +33,9 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: PluginRepoZip
-        path: MiniCactpotSolver\bin\Release\net472\MiniCactpotSolver
+        path: MiniCactpotSolver\bin\Release\MiniCactpotSolver
         if-no-files-found: error
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

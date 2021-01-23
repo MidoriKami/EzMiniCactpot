@@ -2,17 +2,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>MiniCactpotSolver</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1.0</Version>
     <Authors>daemitus</Authors>
     <Company>-</Company>
     <Description></Description>
     <PackageProjectUrl>https://github.com/daemitus/MiniCactpotSolver</PackageProjectUrl>
   </PropertyGroup>
+  
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MiniCactpotSolver</RootNamespace>
     <AssemblyName>MiniCactpotSolver</AssemblyName>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFramework>net472</TargetFramework>
     <FileAlignment>512</FileAlignment>
@@ -20,6 +22,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -30,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -39,18 +43,15 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  
   <PropertyGroup>
-    <DalamudLibPath Condition=" '$(Configuration)' == 'Debug' ">$(appdata)\XIVLauncher\addon\Hooks\</DalamudLibPath>
-    <DalamudLibPath Condition=" '$(Configuration)' == 'Release' ">$(SolutionDir)lib\Dalamud\bin\</DalamudLibPath>
+    <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\</DalamudLibPath>
   </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="1.2.0" />
-    <!--<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />-->
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
     <ProjectReference Include="$(SolutionDir)lib\FFXIVClientStructs\FFXIVClientStructs.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
@@ -68,8 +69,25 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <Target Name="PackagePlugin" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="echo Starting DalamudPackager" />
-    <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="3" MakeZip="true" />
+  
+  <Target Name="ILRepack" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+    <ItemGroup>
+      <InputAssemblies Include="$(TargetPath)" />
+      <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
+    </ItemGroup>
+    <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
+  </Target>
+  
+  <Target Name="CleanOutDir" AfterTargets="ILRepack" Condition=" '$(Configuration)' == 'Release' ">
+    <ItemGroup>
+      <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
+    </ItemGroup>
+    <Message Text="Deleting @(DeleteAssemblies)" Importance="high"/>
+    <Delete Files="@(DeleteAssemblies)" />
+  </Target>
+  
+  <Target Name="PackagePlugin" AfterTargets="CleanOutDir" Condition=" '$(Configuration)' == 'Release' ">
+    <Message Text="Starting DalamudPackager" Importance="high"/>
+    <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="4" MakeZip="true" />
   </Target>
 </Project>
