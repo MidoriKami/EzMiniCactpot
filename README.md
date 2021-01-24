@@ -9,4 +9,4 @@ Currently available as "ezMiniCactpot" via the 3rd party plugin repo https://git
 
 ![](https://github.com/daemitus/MiniCactpotSolver/raw/master/res/demo_tiles.png)
 
-![](https://github.com/daemitus/MiniCactpotSolver/raw/master/res/demo_rows.png)
+![](https://github.com/daemitus/MiniCactpotSolver/raw/master/res/demo_lines.png)
