@@ -43,10 +43,19 @@ namespace MiniCactpotSolver
 
         private async void GameBoardUpdaterLoop(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                await Task.Delay(100);
-                GameBoardUpdater();
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(100);
+                    GameBoardUpdater();
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                PluginLog.Error(ex, "Updater loop has crashed");
+                PluginLog.Error(ex, "Updater loop has crashed");
             }
         }
 
