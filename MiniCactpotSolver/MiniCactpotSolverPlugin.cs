@@ -21,18 +21,18 @@ namespace MiniCactpotSolver
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
-            this.Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
+            Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
 
-            this.Interface.UiBuilder.OnBuildUi += UiBuilder_OnBuildUi_Overlay;
-            this.QueueLoopToken = new CancellationTokenSource();
-            this.QueueLoopTask = Task.Run(() => GameBoardUpdaterLoop(QueueLoopToken.Token));
+            Interface.UiBuilder.OnBuildUi += UiBuilder_OnBuildUi_Overlay;
+            QueueLoopToken = new CancellationTokenSource();
+            QueueLoopTask = Task.Run(() => GameBoardUpdaterLoop(QueueLoopToken.Token));
         }
 
         public async void Dispose()
         {
-            this.Interface.UiBuilder.OnBuildUi -= UiBuilder_OnBuildUi_Overlay;
-            this.QueueLoopToken.Cancel();
-            await this.QueueLoopTask;
+            Interface.UiBuilder.OnBuildUi -= UiBuilder_OnBuildUi_Overlay;
+            QueueLoopToken.Cancel();
+            await QueueLoopTask;
         }
 
         #region GameLogic
