@@ -55,7 +55,7 @@ namespace MiniCactpotSolver
             catch (Exception ex)
             {
                 PluginLog.Error(ex, "Updater loop has crashed");
-                PluginLog.Error(ex, "Updater loop has crashed");
+                Interface.Framework.Gui.Chat.PrintError($"{Name} has encountered a critical error");
             }
         }
 
