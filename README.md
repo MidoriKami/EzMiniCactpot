@@ -1,6 +1,3 @@
-MiniCactpotSolver
-
-
 # MiniCactpotSolver
 
 A Dalamud plugin that highlights the best choices on your Mini Cactpot ticket.
