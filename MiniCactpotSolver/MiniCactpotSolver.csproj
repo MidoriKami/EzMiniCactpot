@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>MiniCactpotSolver</PackageId>
-    <Version>1.0.1.0</Version>
+    <Version>1.0.2.0</Version>
     <Authors>daemitus</Authors>
     <Company>-</Company>
     <Description></Description>
@@ -45,7 +45,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\</DalamudLibPath>
+    <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
   </PropertyGroup>
   
   <ItemGroup>
@@ -69,25 +69,32 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  
-  <Target Name="ILRepack" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+
+  <Target Name="ILRepack" AfterTargets="Build">
     <ItemGroup>
       <InputAssemblies Include="$(TargetPath)" />
       <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
     </ItemGroup>
     <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
   </Target>
-  
-  <Target Name="CleanOutDir" AfterTargets="ILRepack" Condition=" '$(Configuration)' == 'Release' ">
+
+  <Target Name="CleanOutDir" AfterTargets="ILRepack">
     <ItemGroup>
       <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
     </ItemGroup>
-    <Message Text="Deleting @(DeleteAssemblies)" Importance="high"/>
+    <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
     <Delete Files="@(DeleteAssemblies)" />
   </Target>
-  
+
+  <Target Name="LivePluginLoadCopy" AfterTargets="CleanOutDir" Condition=" '$(Configuration)' == 'Debug' ">
+    <Message Text="Copying for LPL" Importance="high" />
+    <Exec Command="if not exist $(TargetDir)LPL ( mkdir $(TargetDir)LPL )" />
+    <Exec Command="copy $(TargetPath) $(TargetDir)LPL\$(TargetFileName)" />
+    <Exec Command="copy $(TargetDir)*.pdb $(TargetDir)LPL\" />
+  </Target>
+
   <Target Name="PackagePlugin" AfterTargets="CleanOutDir" Condition=" '$(Configuration)' == 'Release' ">
-    <Message Text="Starting DalamudPackager" Importance="high"/>
+    <Message Text="Starting DalamudPackager" Importance="high" />
     <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="4" MakeZip="true" />
   </Target>
 </Project>

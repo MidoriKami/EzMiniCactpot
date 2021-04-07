@@ -6,7 +6,7 @@ using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
-using System.Threading;
+using Dalamud.Game.Internal;
 
 namespace MiniCactpotSolver
 {
@@ -24,42 +24,39 @@ namespace MiniCactpotSolver
             Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
 
             Interface.UiBuilder.OnBuildUi += UiBuilder_OnBuildUi_Overlay;
-            QueueLoopToken = new CancellationTokenSource();
-            QueueLoopTask = Task.Run(() => GameBoardUpdaterLoop(QueueLoopToken.Token));
+            Interface.Framework.OnUpdateEvent += GameUpdater;
         }
 
-        public async void Dispose()
+        public void Dispose()
         {
+            Interface.Framework.OnUpdateEvent -= GameUpdater;
             Interface.UiBuilder.OnBuildUi -= UiBuilder_OnBuildUi_Overlay;
-            QueueLoopToken.Cancel();
-            await QueueLoopTask;
         }
 
         #region GameLogic
 
         private readonly PerfectCactpot PerfectCactpot = new PerfectCactpot();
-        private Task QueueLoopTask;
-        private CancellationTokenSource QueueLoopToken;
+        private Task GameTask;
 
-        private async void GameBoardUpdaterLoop(CancellationToken token)
+        private void GameUpdater(Framework framework)
         {
             try
             {
-                while (!token.IsCancellationRequested)
+                if (GameTask == null || GameTask.IsCompleted || GameTask.IsFaulted || GameTask.IsCanceled)
                 {
-                    await Task.Delay(100);
-                    GameBoardUpdater();
+                    GameTask = new Task(GameUpdater);
+                    GameTask.Start();
                 }
             }
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                PluginLog.Error(ex, "Updater loop has crashed");
+                PluginLog.Error(ex, "Updater has crashed");
                 Interface.Framework.Gui.Chat.PrintError($"{Name} has encountered a critical error");
             }
         }
 
-        private unsafe void GameBoardUpdater()
+        private unsafe void GameUpdater()
         {
             if (Interface.ClientState.TerritoryType != 144)  // Golden Saucer
                 return;
