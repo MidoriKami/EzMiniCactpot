@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>MiniCactpotSolver</PackageId>
-    <Version>1.0.2.0</Version>
+    <Version>1.0.2.1</Version>
     <Authors>daemitus</Authors>
     <Company>-</Company>
     <Description></Description>
@@ -49,7 +49,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="1.2.0" />
+    <PackageReference Include="DalamudPackager" Version="1.2.1" />
     <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
     <ProjectReference Include="$(SolutionDir)lib\FFXIVClientStructs\FFXIVClientStructs.csproj" />
     <Reference Include="Newtonsoft.Json">
