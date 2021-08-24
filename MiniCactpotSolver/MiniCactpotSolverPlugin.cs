@@ -4,7 +4,11 @@ using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
-using Dalamud.Game.Internal;
+using Dalamud.Game;
+using Dalamud.Logging;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.Gui;
+using Dalamud.IoC;
 
 namespace MiniCactpotSolver
 {
@@ -12,27 +16,41 @@ namespace MiniCactpotSolver
     {
         public string Name => "ezMiniCactpot";
 
-        internal DalamudPluginInterface Interface;
-
         private const int TotalNumbers = PerfectCactpot.TotalNumbers;
         private const int TotalLanes = PerfectCactpot.TotalLanes;
         private int[] GameState = new int[TotalNumbers];
 
-        public void Initialize(DalamudPluginInterface pluginInterface)
+        internal DalamudPluginInterface Interface { get; init; }
+        internal ChatGui ChatGui { get; init; }
+        internal ClientState ClientState { get; init; }
+        internal Framework Framework { get; init; }
+        internal GameGui GameGui { get; init; }
+
+        public MiniCactpotPlugin(
+            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
+            [RequiredVersion("1.0")] ChatGui chatGui,
+            [RequiredVersion("1.0")] ClientState clientState,
+            [RequiredVersion("1.0")] Framework framework,
+            [RequiredVersion("1.0")] GameGui gameGui)
         {
             Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
 
-            Interface.Framework.OnUpdateEvent += GameUpdater;
+            ChatGui = chatGui;
+            ClientState = clientState;
+            Framework = framework;
+            GameGui = gameGui;
+
+            Framework.Update += GameUpdater;
         }
 
         public void Dispose()
         {
-            Interface.Framework.OnUpdateEvent -= GameUpdater;
+            Framework.Update -= GameUpdater;
         }
 
         #region GameLogic
 
-        private readonly PerfectCactpot PerfectCactpot = new PerfectCactpot();
+        private readonly PerfectCactpot PerfectCactpot = new();
         private Task GameTask;
 
         private void GameUpdater(Framework framework)
@@ -49,19 +67,19 @@ namespace MiniCactpotSolver
             catch (Exception ex)
             {
                 PluginLog.Error(ex, "Updater has crashed");
-                Interface.Framework.Gui.Chat.PrintError($"{Name} has encountered a critical error");
+                ChatGui.PrintError($"{Name} has encountered a critical error");
             }
         }
 
         private unsafe void GameUpdater()
         {
-            if (Interface.ClientState.TerritoryType != 144)  // Golden Saucer
+            if (ClientState.TerritoryType != 144)  // Golden Saucer
                 return;
 
             var ready = false;
             var isVisible = false;
             AddonLotteryDaily* addon = null;
-            var addonPtr = Interface.Framework.Gui.GetUiObjectByName("LotteryDaily", 1);
+            var addonPtr = GameGui.GetAddonByName("LotteryDaily", 1);
 
             if (addonPtr != IntPtr.Zero)
             {

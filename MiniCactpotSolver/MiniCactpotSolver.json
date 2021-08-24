@@ -1,6 +1,12 @@
 {
   "Author": "daemitus",
   "Name": "ezMiniCactpot",
-  "Description": "Highlights recommended tiles in Mini Cactpot for your next move.",
-  "RepoUrl": "https://github.com/daemitus/MiniCactpotSolver"
+  "Punchline": "Shows the next best move in Mini Cactpot.",
+  "Description": "This plugin highlights tiles and lines in MiniCactpot that represent the best potential action you can take.",
+  "RepoUrl": "https://github.com/daemitus/MiniCactpotSolver",
+  "IconUrl": "https://raw.githubusercontent.com/daemitus/MiniCactpotSolver/master/res/icon.png",
+  "ImageUrls": [
+    "https://raw.githubusercontent.com/daemitus/MiniCactpotSolver/master/res/image1.png",
+    "https://raw.githubusercontent.com/daemitus/MiniCactpotSolver/master/res/image2.png"
+  ]
 }

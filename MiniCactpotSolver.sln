@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniCactpotSolver", "MiniCactpotSolver\MiniCactpotSolver.csproj", "{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}"
 EndProject
@@ -11,27 +11,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs", "lib\FFXIVClientStructs\FFXIVClientStructs.csproj", "{3DBAEE68-9D94-4807-BCB1-E42EDD52B489}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Actions", "{FC25FD7B-6740-4024-B34A-F4451AB02FA8}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs", "lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj", "{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3DBAEE68-9D94-4807-BCB1-E42EDD52B489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DBAEE68-9D94-4807-BCB1-E42EDD52B489}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DBAEE68-9D94-4807-BCB1-E42EDD52B489}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DBAEE68-9D94-4807-BCB1-E42EDD52B489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Debug|x64.ActiveCfg = Debug|x64
+		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Debug|x64.Build.0 = Debug|x64
+		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|x64.ActiveCfg = Release|x64
+		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|x64.Build.0 = Release|x64
+		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Debug|x64.Build.0 = Debug|Any CPU
+		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Release|x64.ActiveCfg = Release|Any CPU
+		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
