@@ -1,4 +1,4 @@
-﻿using Dalamud.Plugin;
+using Dalamud.Plugin;
 using System;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -27,11 +27,11 @@ namespace MiniCactpotSolver
         internal GameGui GameGui { get; init; }
 
         public MiniCactpotPlugin(
-            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] ChatGui chatGui,
-            [RequiredVersion("1.0")] ClientState clientState,
-            [RequiredVersion("1.0")] Framework framework,
-            [RequiredVersion("1.0")] GameGui gameGui)
+            DalamudPluginInterface pluginInterface,
+            ChatGui chatGui,
+            ClientState clientState,
+            Framework framework,
+            GameGui gameGui)
         {
             Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
 
@@ -40,12 +40,12 @@ namespace MiniCactpotSolver
             Framework = framework;
             GameGui = gameGui;
 
-            Framework.Update += GameUpdater;
+            Framework.Update += FrameworkLotteryPoll;
         }
 
         public void Dispose()
         {
-            Framework.Update -= GameUpdater;
+            Framework.Update -= FrameworkLotteryPoll;
         }
 
         #region GameLogic
@@ -53,14 +53,20 @@ namespace MiniCactpotSolver
         private readonly PerfectCactpot PerfectCactpot = new();
         private Task GameTask;
 
-        private void GameUpdater(Framework framework)
+        private void FrameworkLotteryPoll(Framework framework)
         {
             try
             {
+                if (ClientState.TerritoryType != 144)  // Golden Saucer
+                    return;
+
+                var addonPtr = GameGui.GetAddonByName("LotteryDaily", 1);
+                if (addonPtr == IntPtr.Zero)
+                    return;
+
                 if (GameTask == null || GameTask.IsCompleted || GameTask.IsFaulted || GameTask.IsCanceled)
                 {
-                    GameTask = new Task(GameUpdater);
-                    GameTask.Start();
+                    GameTask = Task.Run(() => GameUpdater(addonPtr));
                 }
             }
             catch (OperationCanceledException) { }
@@ -71,30 +77,26 @@ namespace MiniCactpotSolver
             }
         }
 
-        private unsafe void GameUpdater()
+        private unsafe void GameUpdater(IntPtr addonPtr)
         {
-            if (ClientState.TerritoryType != 144)  // Golden Saucer
-                return;
-
             var ready = false;
             var isVisible = false;
-            AddonLotteryDaily* addon = null;
-            var addonPtr = GameGui.GetAddonByName("LotteryDaily", 1);
+            AddonLotteryDaily* addon = (AddonLotteryDaily*)addonPtr;
 
-            if (addonPtr != IntPtr.Zero)
+            var rootNode = addon->AtkUnitBase.RootNode;
+            if (rootNode != null)
             {
-                addon = (AddonLotteryDaily*)addonPtr;
-                var rootNode = addon->AtkUnitBase.RootNode;
-                if (rootNode != null)
-                {
-                    isVisible = addon->AtkUnitBase.IsVisible;
-                    ready = true;
-                }
+                isVisible = addon->AtkUnitBase.IsVisible;
+                ready = true;
             }
 
             if (!ready)
+            {
                 for (int i = 0; i < TotalNumbers; i++)
+                {
                     GameState[i] = 0;
+                }
+            }
 
             if (!isVisible)
                 return;
