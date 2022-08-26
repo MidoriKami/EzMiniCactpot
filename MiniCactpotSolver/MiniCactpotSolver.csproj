@@ -39,7 +39,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.6" />
+    <PackageReference Include="DalamudPackager" Version="2.1.8" />
     <Reference Include="FFXIVClientStructs" Private="False" />
     <Reference Include="Newtonsoft.Json" Private="False" />
     <Reference Include="Dalamud" Private="False" />

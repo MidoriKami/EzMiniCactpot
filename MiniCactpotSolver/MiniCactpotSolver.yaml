@@ -1,6 +1,6 @@
 author: daemitus
 name: ezMiniCactpot
-punch_line: Shows the next best move in Mini Cactpot.
+punchline: Shows the next best move in Mini Cactpot.
 description: This plugin highlights tiles and lines in MiniCactpot that represent the best potential action you can take.
 repo_url: https://github.com/daemitus/MiniCactpotSolver
 icon_url: https://raw.githubusercontent.com/daemitus/MiniCactpotSolver/master/res/icon.png
