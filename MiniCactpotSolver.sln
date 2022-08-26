@@ -16,10 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Ac
 		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs", "lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj", "{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs.Generators", "lib\FFXIVClientStructs\FFXIVClientStructs.Generators\FFXIVClientStructs.Generators.csproj", "{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,22 +32,6 @@ Global
 		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|Any CPU.Build.0 = Release|x64
 		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|x64.ActiveCfg = Release|x64
 		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|x64.Build.0 = Release|x64
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Debug|x64.Build.0 = Debug|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Release|Any CPU.Build.0 = Release|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Release|x64.ActiveCfg = Release|Any CPU
-		{768E0191-CEE3-4BC6-9305-73FD2CE5BB15}.Release|x64.Build.0 = Release|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Debug|x64.Build.0 = Debug|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Release|x64.ActiveCfg = Release|Any CPU
-		{7B27E503-9F80-4FD8-B48D-ECC95CD4F9D4}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
