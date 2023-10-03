@@ -143,7 +143,7 @@ namespace MiniCactpotSolver
                 value = SolveAny(ref state, ref which_to_flip);
             }
 
-            // PluginLog.Verbose($"Expected value: {value} MGP");
+            // pluginLog.Verbose($"Expected value: {value} MGP");
 
             return which_to_flip;
         }

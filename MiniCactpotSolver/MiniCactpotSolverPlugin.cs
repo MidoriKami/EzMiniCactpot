@@ -9,29 +9,30 @@ using Dalamud.Logging;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 
 namespace MiniCactpotSolver
 {
     public sealed class MiniCactpotPlugin : IDalamudPlugin
     {
-        public string Name => "ezMiniCactpot";
-
         private const int TotalNumbers = PerfectCactpot.TotalNumbers;
         private const int TotalLanes = PerfectCactpot.TotalLanes;
         private int[] GameState = new int[TotalNumbers];
 
         internal DalamudPluginInterface Interface { get; init; }
-        internal ChatGui ChatGui { get; init; }
-        internal ClientState ClientState { get; init; }
-        internal Framework Framework { get; init; }
-        internal GameGui GameGui { get; init; }
+        internal IChatGui ChatGui { get; init; }
+        internal IClientState ClientState { get; init; }
+        internal IFramework Framework { get; init; }
+        internal IGameGui GameGui { get; init; }
+        internal IPluginLog PluginLog { get; init; }
 
         public MiniCactpotPlugin(
             DalamudPluginInterface pluginInterface,
-            ChatGui chatGui,
-            ClientState clientState,
-            Framework framework,
-            GameGui gameGui)
+            IChatGui chatGui,
+            IClientState clientState,
+            IFramework framework,
+            IGameGui gameGui,
+            IPluginLog pluginLog)
         {
             Interface = pluginInterface ?? throw new ArgumentNullException(nameof(pluginInterface), "DalamudPluginInterface cannot be null");
 
@@ -39,6 +40,7 @@ namespace MiniCactpotSolver
             ClientState = clientState;
             Framework = framework;
             GameGui = gameGui;
+            PluginLog = pluginLog;
 
             Framework.Update += FrameworkLotteryPoll;
         }
@@ -53,7 +55,7 @@ namespace MiniCactpotSolver
         private readonly PerfectCactpot PerfectCactpot = new();
         private Task GameTask;
 
-        private void FrameworkLotteryPoll(Framework framework)
+        private void FrameworkLotteryPoll(IFramework framework)
         {
             try
             {
@@ -73,7 +75,7 @@ namespace MiniCactpotSolver
             catch (Exception ex)
             {
                 PluginLog.Error(ex, "Updater has crashed");
-                ChatGui.PrintError($"{Name} has encountered a critical error");
+                ChatGui.PrintError($"ezMiniCactpot has encountered a critical error");
             }
         }
 
