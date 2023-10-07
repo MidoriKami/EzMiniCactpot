@@ -141,6 +141,10 @@ internal sealed class PerfectCactpot
                 (_, which_to_flip) = PrecalculatedOpenings[stateStr];
                 break;
             }
+            
+            case 9:
+                // We already picked our line.
+                return Array.Empty<bool>();
 
             default:
                 SolveAny(ref state, ref which_to_flip);
@@ -191,7 +195,7 @@ internal sealed class PerfectCactpot
         {
             // We've revealed as many numbers as we can -- time for the final assessment
             var permutations = 0;
-            tot_win = new List<double>() { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tot_win = new List<double> { 0, 0, 0, 0, 0, 0, 0, 0 };
             // One for each row, column, and diagonal
             // Loop over all possible permutations on the unknowns
             do

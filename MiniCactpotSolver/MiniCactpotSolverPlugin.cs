@@ -4,12 +4,16 @@ using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Threading.Tasks;
-using Dalamud.Plugin.Services;
+using Dalamud.Game.Addon.Lifecycle;
+using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 
 namespace MiniCactpotSolver;
 
 public sealed class MiniCactpotPlugin : IDalamudPlugin
 {
+    private readonly PerfectCactpot perfectCactpot = new();
+    private Task gameTask;
+
     private const int TotalNumbers = PerfectCactpot.TotalNumbers;
     private const int TotalLanes = PerfectCactpot.TotalLanes;
     private int[] gameState = new int[TotalNumbers];
@@ -18,40 +22,29 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
     {
         pluginInterface.Create<Service>();
 
-        Service.Framework.Update += FrameworkLotteryPoll;
+        Service.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "LotteryDaily", AddonRefreshDetour);
+        Service.AddonLifecycle.RegisterListener(AddonEvent.PostRefresh, "LotteryDaily", AddonRefreshDetour);
     }
 
     public void Dispose()
     {
-        Service.Framework.Update -= FrameworkLotteryPoll;
+        Service.AddonLifecycle.UnregisterListener(AddonRefreshDetour);
     }
 
-    #region GameLogic
-
-    private readonly PerfectCactpot perfectCactpot = new();
-    private Task gameTask;
-
-    private void FrameworkLotteryPoll(IFramework framework)
+    private void AddonRefreshDetour(AddonEvent type, AddonArgs args)
     {
         try
         {
-            if (Service.ClientState.TerritoryType != 144)  // Golden Saucer
-                return;
-
-            var addonPtr = Service.GameGui.GetAddonByName("LotteryDaily");
-            if (addonPtr == IntPtr.Zero)
-                return;
-
             if (gameTask == null || gameTask.IsCompleted || gameTask.IsFaulted || gameTask.IsCanceled)
             {
-                gameTask = Task.Run(() => GameUpdater(addonPtr));
+                gameTask = Task.Run(() => GameUpdater(args.Addon));
             }
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             Service.PluginLog.Error(ex, "Updater has crashed");
-            Service.ChatGui.PrintError($"ezMiniCactpot has encountered a critical error");
+            Service.ChatGui.PrintError("ezMiniCactpot has encountered a critical error");
         }
     }
 
@@ -59,7 +52,7 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
     {
         var ready = false;
         var isVisible = false;
-        AddonLotteryDaily* addon = (AddonLotteryDaily*)addonPtr;
+        var addon = (AddonLotteryDaily*)addonPtr;
 
         var rootNode = addon->AtkUnitBase.RootNode;
         if (rootNode != null)
@@ -70,9 +63,9 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
 
         if (!ready)
         {
-            for (int i = 0; i < TotalNumbers; i++)
+            for (var i = 0; i < TotalNumbers; i++)
             {
-                this.gameState[i] = 0;
+                gameState[i] = 0;
             }
         }
 
@@ -80,9 +73,9 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
             return;
 
         var localGameState = GetGameState(addon);
-        if (!localGameState.SequenceEqual(this.gameState))
+        if (!localGameState.SequenceEqual(gameState))
         {
-            this.gameState = localGameState;
+            gameState = localGameState;
 
             if (!localGameState.Contains(0))
             {
@@ -159,6 +152,4 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
             node->AtkResNode.MultiplyBlue = 100;
         }
     }
-
-    #endregion GameLogic
 }
