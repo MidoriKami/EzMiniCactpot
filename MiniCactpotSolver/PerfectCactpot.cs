@@ -142,13 +142,13 @@ internal sealed class PerfectCactpot
                 break;
             }
             
-            case 9:
-                // We already picked our line.
-                return Array.Empty<bool>();
-
-            default:
+            case >= 2 and <= 4:
                 SolveAny(ref state, ref which_to_flip);
                 break;
+            
+            default:
+                // We already picked our line.
+                return Array.Empty<bool>();
         }
 
         // pluginLog.Verbose($"Expected value: {value} MGP");
