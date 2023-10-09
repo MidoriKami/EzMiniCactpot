@@ -22,20 +22,31 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
     {
         pluginInterface.Create<Service>();
 
-        Service.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "LotteryDaily", AddonRefreshDetour);
-        Service.AddonLifecycle.RegisterListener(AddonEvent.PostRefresh, "LotteryDaily", AddonRefreshDetour);
+        Service.AddonLifecycle.RegisterListener(AddonEvent.PostRequestedUpdate, "LotteryDaily", AddonSetupDetour);
+        Service.AddonLifecycle.RegisterListener(AddonEvent.PreFinalize, "LotteryDaily", AddonFinalizeDetour);
     }
 
     public void Dispose()
     {
-        Service.AddonLifecycle.UnregisterListener(AddonRefreshDetour);
+        Service.AddonLifecycle.UnregisterListener(AddonSetupDetour);
+        Service.AddonLifecycle.UnregisterListener(AddonStateChanged);
+        Service.AddonLifecycle.UnregisterListener(AddonFinalizeDetour);
     }
 
-    private void AddonRefreshDetour(AddonEvent type, AddonArgs args)
+    private void AddonSetupDetour(AddonEvent type, AddonArgs args)
+    {
+        // This addon calls Refresh before Setup, so we have to wait until it is setup completely before we can start to listen for refreshes.
+        Service.AddonLifecycle.RegisterListener(AddonEvent.PostRefresh, "LotteryDaily", AddonStateChanged);
+        
+        // However, this causes us to miss the first refresh, so we have to trigger our calculation now that setup is done.
+        AddonStateChanged(type, args);
+    }
+    
+    private void AddonStateChanged(AddonEvent type, AddonArgs args)
     {
         try
         {
-            if (gameTask == null || gameTask.IsCompleted || gameTask.IsFaulted || gameTask.IsCanceled)
+            if (gameTask is null or { Status: TaskStatus.RanToCompletion or TaskStatus.Faulted or TaskStatus.Canceled })
             {
                 gameTask = Task.Run(() => GameUpdater(args.Addon));
             }
@@ -47,77 +58,57 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
             Service.ChatGui.PrintError("ezMiniCactpot has encountered a critical error");
         }
     }
+        
+    private void AddonFinalizeDetour(AddonEvent type, AddonArgs args)
+    {
+        Service.AddonLifecycle.UnregisterListener(AddonEvent.PostRefresh, "LotteryDaily", AddonStateChanged);
+    }
 
     private unsafe void GameUpdater(IntPtr addonPtr)
     {
-        var ready = false;
-        var isVisible = false;
         var addon = (AddonLotteryDaily*)addonPtr;
-
-        var rootNode = addon->AtkUnitBase.RootNode;
-        if (rootNode != null)
+        
+        gameState = GetGameState(addon);
+        if (!gameState.Contains(0))
         {
-            isVisible = addon->AtkUnitBase.IsVisible;
-            ready = true;
+            // Perform this check for when the entire board is revealed, no unknowns/zeroes
+            for (var i = 0; i < TotalNumbers; i++)
+                ToggleGameNode(addon, i, false);
+            for (var i = 0; i < TotalLanes; i++)
+                ToggleLaneNode(addon, i, false);
         }
-
-        if (!ready)
+        else
         {
             for (var i = 0; i < TotalNumbers; i++)
+                ToggleGameNode(addon, i, false);  // Reset the number colors
+
+            var solution = perfectCactpot.Solve(gameState);
+
+            if (solution.Length == 8)
             {
-                gameState[i] = 0;
-            }
-        }
+                // The PerfectCactbot lane array is formatted differently than the UI when it gives lane solutions.
+                solution = new[]
+                {
+                    solution[6],  // major diagonal
+                    solution[3],  // left column
+                    solution[4],  // center column
+                    solution[5],  // right column
+                    solution[7],  // minor diagonal
+                    solution[0],  // top row
+                    solution[1],  // middle row
+                    solution[2],  // bottom row
+                };
 
-        if (!isVisible)
-            return;
-
-        var localGameState = GetGameState(addon);
-        if (!localGameState.SequenceEqual(gameState))
-        {
-            gameState = localGameState;
-
-            if (!localGameState.Contains(0))
-            {
-                // Perform this check for when the entire board is revealed, no unknowns/zeroes
                 for (var i = 0; i < TotalNumbers; i++)
-                    ToggleGameNode(addon, i, false);
+                    ToggleGameNode(addon, i, false);  // Reset the number colors
+
                 for (var i = 0; i < TotalLanes; i++)
-                    ToggleLaneNode(addon, i, false);
+                    ToggleLaneNode(addon, i, solution[i]);
             }
             else
             {
                 for (var i = 0; i < TotalNumbers; i++)
-                    ToggleGameNode(addon, i, false);  // Reset the number colors
-
-                var solution = perfectCactpot.Solve(localGameState);
-
-                if (solution.Length == 8)
-                {
-                    // The PerfectCactbot lane array is formatted differently than the UI when it gives lane solutions.
-                    solution = new[]
-                    {
-                        solution[6],  // major diagonal
-                        solution[3],  // left column
-                        solution[4],  // center column
-                        solution[5],  // right column
-                        solution[7],  // minor diagonal
-                        solution[0],  // top row
-                        solution[1],  // middle row
-                        solution[2],  // bottom row
-                    };
-
-                    for (var i = 0; i < TotalNumbers; i++)
-                        ToggleGameNode(addon, i, false);  // Reset the number colors
-
-                    for (var i = 0; i < TotalLanes; i++)
-                        ToggleLaneNode(addon, i, solution[i]);
-                }
-                else
-                {
-                    for (var i = 0; i < TotalNumbers; i++)
-                        ToggleGameNode(addon, i, solution[i]);
-                }
+                    ToggleGameNode(addon, i, solution[i]);
             }
         }
     }
