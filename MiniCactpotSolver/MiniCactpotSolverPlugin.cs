@@ -22,7 +22,7 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
     {
         pluginInterface.Create<Service>();
 
-        Service.AddonLifecycle.RegisterListener(AddonEvent.PostRequestedUpdate, "LotteryDaily", AddonSetupDetour);
+        Service.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "LotteryDaily", AddonSetupDetour);
         Service.AddonLifecycle.RegisterListener(AddonEvent.PreFinalize, "LotteryDaily", AddonFinalizeDetour);
     }
 
