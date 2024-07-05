@@ -18,7 +18,7 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
     private const int TotalLanes = PerfectCactpot.TotalLanes;
     private int[] gameState = new int[TotalNumbers];
 
-    public MiniCactpotPlugin(DalamudPluginInterface pluginInterface)
+    public MiniCactpotPlugin(IDalamudPluginInterface pluginInterface)
     {
         pluginInterface.Create<Service>();
 
@@ -125,7 +125,7 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin
 
     private unsafe void ToggleLaneNode(AddonLotteryDaily* addon, int i, bool enable)
     {
-        ToggleNode(addon->LaneSelector[i]->AtkComponentBase.OwnerNode, enable);
+        ToggleNode(addon->LaneSelector[i]->OwnerNode, enable);
     }
 
     private unsafe void ToggleNode(AtkComponentNode* node, bool enable)
