@@ -101,7 +101,7 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin {
     }
 
     private unsafe void ToggleGameNode(AddonLotteryDaily* addon, int i, bool enable) {
-        ToggleNode(addon->GameBoard[i]->AtkComponentButton.AtkComponentBase.OwnerNode, enable);
+        ToggleNode(addon->GameBoard[i]->AtkComponentButton.OwnerNode, enable);
     }
 
     private unsafe void ToggleLaneNode(AddonLotteryDaily* addon, int i, bool enable) {
@@ -110,14 +110,30 @@ public sealed class MiniCactpotPlugin : IDalamudPlugin {
 
     private unsafe void ToggleNode(AtkComponentNode* node, bool enable) {
         if (enable) {
-            node->AtkResNode.MultiplyRed = 0;
-            node->AtkResNode.MultiplyGreen = 100;
-            node->AtkResNode.MultiplyBlue = 0;
+            node->Color.R = 0;
+            node->Color.G = 0;
+            node->Color.B = 0;
+
+            node->MultiplyRed = 33;
+            node->MultiplyGreen = 33;
+            node->MultiplyBlue = 33;
+            
+            node->AddRed = 12;
+            node->AddGreen = 123;
+            node->AddBlue = 220;
         }
         else {
-            node->AtkResNode.MultiplyRed = 100;
-            node->AtkResNode.MultiplyGreen = 100;
-            node->AtkResNode.MultiplyBlue = 100;
+            node->Color.R = 0xFF;
+            node->Color.G = 0xFF;
+            node->Color.B = 0xFF;
+            
+            node->MultiplyRed = 100;
+            node->MultiplyGreen = 100;
+            node->MultiplyBlue = 100;
+            
+            node->AddRed = 0;
+            node->AddGreen = 0;
+            node->AddBlue = 0;
         }
     }
 }
