@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Ac
 		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KamiToolKit", "KamiToolKit\KamiToolKit.csproj", "{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KamiLib", "KamiLib\KamiLib.csproj", "{95E9749F-3357-454B-9D42-801AB2840627}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,22 @@ Global
 		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|Any CPU.Build.0 = Release|x64
 		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|x64.ActiveCfg = Release|x64
 		{B5AD85D8-F5F5-42F5-909F-1DB5AAA0140F}.Release|x64.Build.0 = Release|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Debug|Any CPU.Build.0 = Debug|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Debug|x64.ActiveCfg = Debug|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Debug|x64.Build.0 = Debug|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Release|Any CPU.ActiveCfg = Release|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Release|Any CPU.Build.0 = Release|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Release|x64.ActiveCfg = Release|x64
+		{78DDC7F0-22CE-4093-BDD3-4DAF7F998CDD}.Release|x64.Build.0 = Release|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Debug|Any CPU.Build.0 = Debug|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Debug|x64.ActiveCfg = Debug|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Debug|x64.Build.0 = Debug|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Release|Any CPU.ActiveCfg = Release|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Release|Any CPU.Build.0 = Release|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Release|x64.ActiveCfg = Release|x64
+		{95E9749F-3357-454B-9D42-801AB2840627}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

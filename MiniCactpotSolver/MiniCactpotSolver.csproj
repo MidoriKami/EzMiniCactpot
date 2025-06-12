@@ -5,4 +5,8 @@
     <Authors>daemitus, MidoriKami</Authors>
     <PackageProjectUrl>https://github.com/MidoriKami/MiniCactpotSolver</PackageProjectUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KamiLib\KamiLib.csproj" />
+    <ProjectReference Include="..\KamiToolKit\KamiToolKit.csproj" />
+  </ItemGroup>
 </Project>

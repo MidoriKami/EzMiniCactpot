@@ -141,7 +141,7 @@ internal sealed class PerfectCactpot {
                 break;
         }
 
-        Service.PluginLog.Verbose($"Expected value: {value} MGP");
+        Service.Log.Verbose($"Expected value: {value} MGP");
 
         return which_to_flip;
     }
