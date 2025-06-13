@@ -173,10 +173,6 @@ public class GameGrid : ResNode {
 	}
 
 	public void SetActiveButtons(params int[]? indexes) {
-#if DEBUG
-		return;
-#endif
-		
 		foreach (var image in buttonImages) {
 			image.IsVisible = false;
 		}
@@ -189,10 +185,6 @@ public class GameGrid : ResNode {
 	}
 
 	public void SetActiveLanes(params int[]? indexes) {
-#if DEBUG
-		return;
-#endif
-
 		foreach (var lane in laneImages) {
 			lane.IsVisible = false;
 		}
