@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Dalamud.Game.Addon.Events;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiToolKit;
+using KamiToolKit.Nodes;
 
 namespace MiniCactpotSolver;
 
@@ -14,6 +16,7 @@ public unsafe class LotteryDailyController : IDisposable {
     private int[]? boardState;
     private GameGrid? gameGrid;
     private Task? gameTask;
+    private ButtonBase? configButton;
 
     public LotteryDailyController() {
 		addonLotteryDaily = new AddonController<AddonLotteryDaily>(Service.PluginInterface, "LotteryDaily");
@@ -63,6 +66,18 @@ public unsafe class LotteryDailyController : IDisposable {
 		};
 		
 		Service.NativeController.AttachNode(gameGrid, buttonContainerNode);
+
+		configButton = new CircleButtonNode {
+			Position = new Vector2(8.0f, 8.0f),
+			Size = new Vector2(32.0f, 32.0f),
+			Icon = ButtonIcon.GearCog,
+			Tooltip = "Configure EzMiniCactpot Plugin",
+			IsVisible = true,
+		};
+		
+		configButton.AddEvent(AddonEventType.ButtonClick, () => Service.WindowManager.GetWindow<ConfigWindow>()?.UnCollapseOrToggle());
+		
+		Service.NativeController.AttachNode(configButton, buttonContainerNode);
 	}
 	
 	private void AddonLotteryDailyOnUpdate(AddonLotteryDaily* addon) {
