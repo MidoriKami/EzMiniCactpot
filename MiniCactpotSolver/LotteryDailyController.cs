@@ -36,6 +36,11 @@ public unsafe class LotteryDailyController : IDisposable {
 			gameGrid = null;
 		});
 		
+		Service.NativeController.DetachNode(configButton, () => {
+			configButton?.Dispose();
+			configButton = null;
+		});
+		
 		gameTask?.Dispose();
 	}
 
@@ -124,6 +129,11 @@ public unsafe class LotteryDailyController : IDisposable {
 		Service.NativeController.DetachNode(gameGrid, () => {
 			gameGrid?.Dispose();
 			gameGrid = null;
+		});
+		
+		Service.NativeController.DetachNode(configButton, () => {
+			configButton?.Dispose();
+			configButton = null;
 		});
 	}
 }
