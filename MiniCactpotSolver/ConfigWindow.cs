@@ -30,36 +30,35 @@ public class ConfigWindow() : Window("EzMiniCactpot", new Vector2(400.0f, 500.0f
 		ImGuiTweaks.Header("Icon");
 
 		if (ImGuiTweaks.GameIconButton(Service.TextureProvider, 61332)) {
-			Service.Config.CustomIconId = 61332;
+			Service.Config.IconId = 61332;
 			UpdateIcons();
 		}
 
 		ImGui.SameLine();
 		
 		if (ImGuiTweaks.GameIconButton(Service.TextureProvider, 90452)) {
-			Service.Config.CustomIconId = 90452;
+			Service.Config.IconId = 90452;
 			UpdateIcons();
 		}
 		
 		ImGui.SameLine();
 		
 		if (ImGuiTweaks.GameIconButton(Service.TextureProvider, 234008)) {
-			Service.Config.CustomIconId = 234008;
+			Service.Config.IconId = 234008;
 			UpdateIcons();
 		}
 		
 		ImGui.Spacing();
 		
-		if (ImGui.Checkbox("Use Custom Icon", ref Service.Config.UseCustomIcon)) {
+		ImGui.AlignTextToFramePadding();
+		ImGui.Text("IconId:");
+		
+		ImGui.SameLine();
+		
+		var iconId = (int) Service.Config.IconId;
+		if (ImGui.InputInt("##IconId", ref iconId)) {
+			Service.Config.IconId = (uint) iconId;
 			UpdateIcons();
-		}
-
-		if (Service.Config.UseCustomIcon) {
-			var iconId = (int) Service.Config.CustomIconId;
-			if (ImGui.InputInt("IconId", ref iconId)) {
-				Service.Config.CustomIconId = (uint) iconId;
-				UpdateIcons();
-			}
 		}
 	}
 	
@@ -79,7 +78,7 @@ public class ConfigWindow() : Window("EzMiniCactpot", new Vector2(400.0f, 500.0f
 		=> Service.Config.Save();
 
 	private void UpdateIcons()
-		=> Service.AddonController.UpdateIcons(Service.Config.CustomIconId);
+		=> Service.AddonController.UpdateIcons(Service.Config.IconId);
 
 	private void UpdateColors() {
 		Service.AddonController.UpdateButtonColors(Service.Config.ButtonColor);
