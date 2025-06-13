@@ -17,7 +17,7 @@ public class GameGrid : ResNode {
 		var gameGridOffset = new Vector2(28.0f, 44.0f);
 		var buttonsOffset = gameGridOffset + new Vector2(32.0f, 32.0f);
 
-		uint selectedIcon = Service.Config.CustomIconId;
+		var selectedIcon = Service.Config.IconId;
 		
 		AddTimeline(new TimelineBuilder()
 			.BeginFrameSet(1, 130)
@@ -59,77 +59,35 @@ public class GameGrid : ResNode {
 		
 		laneImages = new ImageNode[8];
 
-		laneImages[0] = new IconImageNode {
-			Position = new Vector2(0.0f, 40.0f) + gameGridOffset,
-			Size = new Vector2(34.0f, 34.0f),
-			Origin = new Vector2(17.0f, 17.0f),
-			Color = Service.Config.LaneColor,
-			IsVisible = true,
-			IconId = 60934,
-		};
-		
-		AddLaneNodeTimeline(laneImages[0], MathF.PI / 2.0f);
-		Service.NativeController.AttachNode(laneImages[0], this);
+		foreach (var index in Enumerable.Range(0, 3)) {
+			laneImages[index] = new IconImageNode {
+				Position = new Vector2(0.0f, 40.0f + 54.0f * index) + gameGridOffset,
+				Size = new Vector2(34.0f, 34.0f),
+				Origin = new Vector2(17.0f, 17.0f),
+				Color = Service.Config.LaneColor,
+				IsVisible = true,
+				IconId = 60934,
+			};
+			
+			AddLaneNodeTimeline(laneImages[index], MathF.PI / 2.0f);
+			Service.NativeController.AttachNode(laneImages[index], this);
+		}
 
-		laneImages[1] = new IconImageNode {
-			Position = new Vector2(0.0f, 94.0f) + gameGridOffset,
-			Size = new Vector2(34.0f, 34.0f),
-			Origin = new Vector2(17.0f, 17.0f),
-			Color = Service.Config.LaneColor,
-			IsVisible = true,
-			IconId = 60934,
-		};
-		
-		AddLaneNodeTimeline(laneImages[1], MathF.PI / 2.0f);
-		Service.NativeController.AttachNode(laneImages[1], this);
-		
-		laneImages[2] = new IconImageNode {
-			Position = new Vector2(0.0f, 148.0f) + gameGridOffset,
-			Size = new Vector2(34.0f, 34.0f),
-			Origin = new Vector2(17.0f, 17.0f),
-			Color = Service.Config.LaneColor,
-			IsVisible = true,
-			IconId = 60934,
-		};
-		
-		AddLaneNodeTimeline(laneImages[2], MathF.PI / 2.0f);
-		Service.NativeController.AttachNode(laneImages[2], this);
-		
-		laneImages[3] = new IconImageNode {
-			Position = new Vector2(42.0f, 0.0f) + gameGridOffset,
-			Size = new Vector2(34.0f, 34.0f),
-			Origin = new Vector2(17.0f, 17.0f),
-			Color = Service.Config.LaneColor,
-			IsVisible = true,
-			IconId = 60934,
-		};
-		
-		AddLaneNodeTimeline(laneImages[3], MathF.PI);
-		Service.NativeController.AttachNode(laneImages[3], this);
-		
-		laneImages[4] = new IconImageNode {
-			Position = new Vector2(96.0f, 0.0f) + gameGridOffset,
-			Size = new Vector2(34.0f, 34.0f),
-			Origin = new Vector2(17.0f, 17.0f),
-			Color = Service.Config.LaneColor,
-			IsVisible = true,
-			IconId = 60934,
-		};
-		
-		AddLaneNodeTimeline(laneImages[4], MathF.PI);
-		Service.NativeController.AttachNode(laneImages[4], this);
-		
-		laneImages[5] = new IconImageNode {
-			Position = new Vector2(150.0f, 0.0f) + gameGridOffset,
-			Size = new Vector2(34.0f, 34.0f),
-			Origin = new Vector2(17.0f, 17.0f),
-			Color = Service.Config.LaneColor,
-			IsVisible = true,
-			IconId = 60934,
-		};
-		
-		AddLaneNodeTimeline(laneImages[5], MathF.PI);
-		Service.NativeController.AttachNode(laneImages[5], this);
+		foreach (var index in Enumerable.Range(0, 3)) {
+			var arrayIndex = index + 3;
+			
+			laneImages[arrayIndex] = new IconImageNode {
+				Position = new Vector2(42.0f + 54.0f * index, 0.0f) + gameGridOffset,
+				Size = new Vector2(34.0f, 34.0f),
+				Origin = new Vector2(17.0f, 17.0f),
+				Color = Service.Config.LaneColor,
+				IsVisible = true,
+				IconId = 60934,
+			};
+			
+			AddLaneNodeTimeline(laneImages[arrayIndex], MathF.PI);
+			Service.NativeController.AttachNode(laneImages[arrayIndex], this);
+		}
 		
 		laneImages[6] = new IconImageNode {
 			Position = new Vector2(0.0f, 0.0f) + gameGridOffset,
