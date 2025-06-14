@@ -77,10 +77,9 @@ public unsafe class LotteryDailyController : IDisposable {
 			Size = new Vector2(32.0f, 32.0f),
 			Icon = ButtonIcon.GearCog,
 			Tooltip = "Configure EzMiniCactpot Plugin",
+			OnClick = () => Service.WindowManager.GetWindow<ConfigWindow>()?.UnCollapseOrToggle(),
 			IsVisible = true,
 		};
-		
-		configButton.AddEvent(AddonEventType.ButtonClick, () => Service.WindowManager.GetWindow<ConfigWindow>()?.UnCollapseOrToggle());
 		
 		Service.NativeController.AttachNode(configButton, buttonContainerNode);
 	}
