@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Dalamud.Game.Addon.Events;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiToolKit;
 using KamiToolKit.Nodes;
