@@ -47,7 +47,7 @@ public unsafe class LotteryDailyController : IDisposable {
 		=> gameGrid?.Timeline?.StartAnimation(201);
 
 	public void EnableAnimations()
-		=> gameGrid?.Timeline?.StartAnimation(200);
+		=> gameGrid?.Timeline?.StartAnimation(202);
 
 	public void UpdateIcons(uint icon)
 		=> gameGrid?.UpdateIcons(icon);

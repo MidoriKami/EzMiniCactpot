@@ -19,10 +19,13 @@ public class GameGrid : ResNode {
 		var selectedIcon = Service.Config.IconId;
 		
 		AddTimeline(new TimelineBuilder()
-			.BeginFrameSet(1, 130)
+			.BeginFrameSet(1, 160)
 			.AddLabel(1, 200, AtkTimelineJumpBehavior.Start, 0)
 			.AddLabel(120, 0, AtkTimelineJumpBehavior.LoopForever, 200)
 			.AddLabel(121, 201, AtkTimelineJumpBehavior.Start, 0)
+			.AddLabel(130,0, AtkTimelineJumpBehavior.PlayOnce, 0)
+			.AddLabel(131, 202, AtkTimelineJumpBehavior.Start, 0)
+			.AddLabel(160, 0, AtkTimelineJumpBehavior.LoopForever, 200)
 			.EndFrameSet()
 			.Build());
 		
@@ -48,6 +51,10 @@ public class GameGrid : ResNode {
 				.EndFrameSet()
 				.BeginFrameSet(121, 130)
 				.AddFrame(121, scale: new Vector2(0.8f, 0.8f), rotation: 0.0f)
+				.EndFrameSet()
+				.BeginFrameSet(131, 160)
+				.AddFrame(131, alpha: 0, rotation: 0.0f, scale: new Vector2(0.0f, 0.0f))
+				.AddFrame(160, alpha: 255, rotation: 2.0f * MathF.PI, scale: new Vector2(0.8f, 0.8f))
 				.EndFrameSet()
 				.Build());
 			
@@ -112,7 +119,7 @@ public class GameGrid : ResNode {
 		AddLaneNodeTimeline(laneImages[7], MathF.PI + MathF.PI / 4.0f);
 		Service.NativeController.AttachNode(laneImages[7], this);
 
-		Timeline?.StartAnimation(Service.Config.EnableAnimations ? 200 : 201);
+		Timeline?.StartAnimation(Service.Config.EnableAnimations ? 202 : 201);
 	}
 
 	protected override void Dispose(bool disposing) {
@@ -130,6 +137,10 @@ public class GameGrid : ResNode {
 	}
 
 	public void SetActiveButtons(params int[]? indexes) {
+		if (Service.Config.EnableAnimations) {
+			Timeline?.StartAnimation(202);
+		}
+		
 		foreach (var image in buttonImages) {
 			image.IsVisible = false;
 		}
@@ -142,6 +153,10 @@ public class GameGrid : ResNode {
 	}
 
 	public void SetActiveLanes(params int[]? indexes) {
+		if (Service.Config.EnableAnimations) {
+			Timeline?.StartAnimation(202);
+		}
+		
 		foreach (var lane in laneImages) {
 			lane.IsVisible = false;
 		}
@@ -162,6 +177,10 @@ public class GameGrid : ResNode {
 			.EndFrameSet()
 			.BeginFrameSet(121, 130)
 			.AddFrame(121, scale: new Vector2(1.0f, 1.0f), rotation: rotation)
+			.EndFrameSet()
+			.BeginFrameSet(131, 160)
+			.AddFrame(131, alpha: 0)
+			.AddFrame(160, alpha: 255)
 			.EndFrameSet()
 			.Build());
 	}
