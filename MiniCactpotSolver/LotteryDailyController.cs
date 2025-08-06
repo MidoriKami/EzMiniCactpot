@@ -18,7 +18,7 @@ public unsafe class LotteryDailyController : IDisposable {
     private ButtonBase? configButton;
 
     public LotteryDailyController() {
-		addonLotteryDaily = new AddonController<AddonLotteryDaily>(Service.PluginInterface, "LotteryDaily");
+		addonLotteryDaily = new AddonController<AddonLotteryDaily>("LotteryDaily");
 		
 		addonLotteryDaily.OnAttach += AddonLotteryDailyOnAttach;
 		addonLotteryDaily.OnDetach += AddonLotteryDailyOnDetach;
@@ -44,10 +44,10 @@ public unsafe class LotteryDailyController : IDisposable {
 	}
 
 	public void DisableAnimations()
-		=> gameGrid?.Timeline?.StartAnimation(201);
+		=> gameGrid?.Timeline?.PlayAnimation(201);
 
 	public void EnableAnimations()
-		=> gameGrid?.Timeline?.StartAnimation(202);
+		=> gameGrid?.Timeline?.PlayAnimation(202);
 
 	public void UpdateIcons(uint icon)
 		=> gameGrid?.UpdateIcons(icon);
