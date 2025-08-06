@@ -1,7 +1,7 @@
 <Project Sdk="Dalamud.NET.Sdk/13.0.0">
   <PropertyGroup>
     <PackageId>MiniCactpotSolver</PackageId>
-    <Version>3.0.0.0</Version>
+    <Version>3.0.0.1</Version>
     <Authors>daemitus, MidoriKami</Authors>
     <PackageProjectUrl>https://github.com/MidoriKami/MiniCactpotSolver</PackageProjectUrl>
   </PropertyGroup>
