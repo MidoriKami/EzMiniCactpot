@@ -119,7 +119,7 @@ public class GameGrid : ResNode {
 		AddLaneNodeTimeline(laneImages[7], MathF.PI + MathF.PI / 4.0f);
 		Service.NativeController.AttachNode(laneImages[7], this);
 
-		Timeline?.StartAnimation(Service.Config.EnableAnimations ? 202 : 201);
+		Timeline?.PlayAnimation(Service.Config.EnableAnimations ? 202 : 201);
 	}
 
 	protected override void Dispose(bool disposing) {
@@ -138,7 +138,7 @@ public class GameGrid : ResNode {
 
 	public void SetActiveButtons(params int[]? indexes) {
 		if (Service.Config.EnableAnimations) {
-			Timeline?.StartAnimation(202);
+			Timeline?.PlayAnimation(202);
 		}
 		
 		foreach (var image in buttonImages) {
@@ -154,7 +154,7 @@ public class GameGrid : ResNode {
 
 	public void SetActiveLanes(params int[]? indexes) {
 		if (Service.Config.EnableAnimations) {
-			Timeline?.StartAnimation(202);
+			Timeline?.PlayAnimation(202);
 		}
 		
 		foreach (var lane in laneImages) {
