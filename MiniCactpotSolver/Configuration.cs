@@ -12,7 +12,7 @@ public class Configuration {
 	public uint IconId = 61332;
 	
 	public static Configuration Load()
-		=> Service.PluginInterface.LoadConfigFile("EzMiniCactpot.config.json", () => new Configuration());
+		=> Service.PluginInterface.LoadConfigFile<Configuration>("EzMiniCactpot.config.json");
 
 	public void Save()
 		=> Service.PluginInterface.SaveConfigFile("EzMiniCactpot.config.json", this);
