@@ -1,3 +1,7 @@
+# DEPRECATION NOTICE
+
+The features of this plugin have been moved to [VanillaPlus](https://github.com/MidoriKami/VanillaPlus/) and this plugin will no longer be updated. Please use that instead.
+
 # MiniCactpotSolver
 
 A Dalamud plugin that highlights the best choices on your Mini Cactpot ticket.
